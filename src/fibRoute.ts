@@ -1,21 +1,23 @@
 import { Request, Response } from "express";
 import fibonacci from "./fib";
 
-export default (req: Request, res: Response): void => {
+// Define route handler with proper type for params
+export default (req: Request<{ num: string }>, res: Response): void => {
   const { num } = req.params;
-  const parsedNum = parseInt(num, 10);
+  const parsedNum = Number(num);
 
-  if (isNaN(parsedNum)) {
+  if (Number.isNaN(parsedNum)) {
     res.status(400).send(`Invalid input: '${num}' is not a number`);
     return;
   }
 
   const fibN: number = fibonacci(parsedNum) as number;
-  let result = `fibonacci(${parsedNum}) is ${fibN}`;
 
-  if (fibN < 0) {
-    result = `fibonacci(${parsedNum}) is undefined`;
+  // Ensure fibonacci returns a number, otherwise handle gracefully
+  if (typeof fibN !== "number" || fibN < 0) {
+    res.send(`fibonacci(${parsedNum}) is undefined`);
+    return;
   }
 
-  res.send(result);
+  res.send(`fibonacci(${parsedNum}) is ${fibN}`);
 };
