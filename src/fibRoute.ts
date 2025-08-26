@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import fibonacci from "./fib";
 
-// Define route handler with proper type for params
+// Route handler with proper typing
 export default (req: Request<{ num: string }>, res: Response): void => {
   const { num } = req.params;
   const parsedNum = Number(num);
@@ -11,10 +11,9 @@ export default (req: Request<{ num: string }>, res: Response): void => {
     return;
   }
 
-  const fibN: number = fibonacci(parsedNum) as number;
+  const fibN: number = fibonacci(parsedNum);
 
-  // Ensure fibonacci returns a number, otherwise handle gracefully
-  if (typeof fibN !== "number" || fibN < 0) {
+  if (fibN < 0) {
     res.send(`fibonacci(${parsedNum}) is undefined`);
     return;
   }
